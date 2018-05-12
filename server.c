@@ -189,15 +189,6 @@ int main(int argc, char *argv[] ){ // arg count, arg vector
       exit(4);
     }
 
-    //send(fdc1, "Let's play", 40, flags);
-    //send(fdc2, "Let's play", 40, flags);
-
-	  //recv(fdc1, buffer, 100, flags );
-    //recv(fdc2, buffer2, 100, flags );
-
-    //send(fdc1, buffer2, 40, flags);
-	  //send(fdc2, buffer, 40, flags);
-
 	strcpy(buffer, "");
 
     while(1){
@@ -210,37 +201,36 @@ int main(int argc, char *argv[] ){ // arg count, arg vector
           ++num_guess;
           sprintf(buffer, "%s%s",buffer, msg);
 
+          if((strncmp(msg, "You win", 7) == 0)){
+              send(fdc1, "You win", 100, flags);
+              send(fdc2, "You Lose", 100, flags);
+          	  break;
+            }
+
           send(fdc2, buffer, 100, flags);
+          send(fdc1, msg, 100, flags);
           rcvsize = recv(fdc2, buffer, 100, flags );
 
           buffer[rcvsize] = '\0';
           msg = mastermind(secret, buffer, temp);
-          ++num_guess;
           sprintf(buffer, "%s%s",buffer, msg);
+          send(fdc2, msg, 100, flags);
 
-          //send(fdc1, buffer, 100, flags);
+          if((strncmp(msg, "You win", 7) == 0)){
+              send(fdc2, "You win", 100, flags);
+              send(fdc1, "You Lose", 100, flags);
+          	  break;
+            }
 
-              /*rcvsize = recv( fdc1, buffer, 100, flags );
-              printf("%s\n", buffer);
-
-              buffer[rcvsize] = '\0';
-              msg = mastermind(secret, buffer, temp);
-              ++num_guess;
-
+          if(num_guess == 2){
+              sprintf(msg, "You Lose. Winnumber: %s\n", secret);
               send(fdc1, msg, 100, flags);
-
-                if((strcmp(msg, "You win") == 0)){
-                    printf("%s\n", secret);
-                    send(fdc1, secret, strlen(secret), flags);
-					          break;
-                }
-
-                if(num_guess == 8){
-                    send(fdc1, "You Lose", 8, flags);
-                    break;
-                }*/
+              send(fdc2, msg, 100, flags);
+              break;
+            }
     }
 
-close(fd);
+close(fdc1);
+close(fdc2);
 exit(0);
    }

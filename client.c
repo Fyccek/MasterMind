@@ -89,29 +89,18 @@ int main(int argc, char *argv[] ){ // arg count, arg vector
         printf("\nEnter your guess: ");
 				fgets(buffer,100,stdin);
 				send(fd, buffer, 100, flags);
+        recv(fd, buffer3, 100, flags );
 
-                /*cica++;
-                printf("Enter your guess: ");
-                fgets(buffer, 100-1, stdin);
-
-                send(fd, buffer, 10, flags);
-
-                rcvsize = recv( fd, buffer, 1024, flags );
-                buffer[rcvsize] = '\0';
-
-                if(strncmp(buffer, lose, 8) == 0){
-                    printf("%s\n", buffer);
-                    close(fd);
-                    break;
+                if((strncmp(TEMP, lose, 8) == 0) || (strcmp(buffer3, lose) == 0)){
+                    recv( fd, buffer2, 1024, flags );
+                    printf("%s\n", buffer2);
+                    return 1;
                 }
 
-                if(strcmp(buffer, win) == 0){
+                if((strcmp(TEMP, win) == 0) || (strcmp(buffer3, win) == 0)){
                     recv( fd, buffer2, 1024, flags );
                     printf("Winner number: %s\n", buffer2);
-                    close(fd);
                     break;
-                } printf("Hint: %s\n", buffer);*/
-  }
-
-   exit(0);
-   }
+                } printf("Hint: %s\n", buffer3);
+              } return 0;
+            }
