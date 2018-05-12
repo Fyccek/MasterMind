@@ -83,9 +83,8 @@ int main(int argc, char *argv[] ){ // arg count, arg vector
     while(1){
 
         recv(fd, TEMP, 100, flags );
-        printf("Előző válasz: %s\n", buffer);
-        printf("%s\n", TEMP);
-        printf("\nEnter your guess: ");
+        printf("Előző válasz: %s\n", TEMP);
+        printf("Enter your guess: ");
 				fgets(buffer,100,stdin);
 				send(fd, buffer, 100, flags);
 

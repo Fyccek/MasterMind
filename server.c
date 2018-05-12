@@ -198,7 +198,7 @@ int main(int argc, char *argv[] ){ // arg count, arg vector
     //send(fdc1, buffer2, 40, flags);
 	  //send(fdc2, buffer, 40, flags);
 
-	strcpy(buffer, "Let's play");
+	strcpy(buffer, "");
 
     while(1){
 
