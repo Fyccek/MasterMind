@@ -208,6 +208,7 @@ int main(int argc, char *argv[] ){ // arg count, arg vector
           buffer[rcvsize] = '\0';
           msg = mastermind(secret, buffer, temp);
           ++num_guess;
+          sprintf(buffer, "%s%s",buffer, msg);
 
           send(fdc2, buffer, 100, flags);
           rcvsize = recv(fdc2, buffer, 100, flags );
@@ -215,6 +216,7 @@ int main(int argc, char *argv[] ){ // arg count, arg vector
           buffer[rcvsize] = '\0';
           msg = mastermind(secret, buffer, temp);
           ++num_guess;
+          sprintf(buffer, "%s%s",buffer, msg);
 
           //send(fdc1, buffer, 100, flags);
 
