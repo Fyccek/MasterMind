@@ -85,22 +85,30 @@ int main(int argc, char *argv[] ){ // arg count, arg vector
         recv(fd, TEMP, 100, flags );
         printf("===============================\n");
         printf("Előző válasz: %s", TEMP);
-        printf("\n===============================");
+        printf("\n===============================\n");
+
+        if(strncmp(TEMP, lose, 8) == 0){
+            break;
+        }
+
+        if((strcmp(TEMP, win) == 0)){
+            break;
+        }
+
         printf("\nEnter your guess: ");
 				fgets(buffer,100,stdin);
 				send(fd, buffer, 100, flags);
         recv(fd, buffer3, 100, flags );
 
-                if((strncmp(TEMP, lose, 8) == 0) || (strcmp(buffer3, lose) == 0)){
-                    recv( fd, buffer2, 1024, flags );
-                    printf("%s\n", buffer2);
-                    return 1;
+                if((strncmp(buffer3, lose, 9) == 0) || strncmp(TEMP, lose, 8) == 0){
+                    printf("Result: %s\n", buffer3);
+                    break;
                 }
 
-                if((strcmp(TEMP, win) == 0) || (strcmp(buffer3, win) == 0)){
-                    recv( fd, buffer2, 1024, flags );
-                    printf("Winner number: %s\n", buffer2);
+                if((strcmp(buffer3, win) == 0)){
+                    printf("Result: %s\n", buffer3);
                     break;
                 } printf("Hint: %s\n", buffer3);
-              } return 0;
+              }
+           exit(0);
             }

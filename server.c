@@ -214,20 +214,22 @@ int main(int argc, char *argv[] ){ // arg count, arg vector
           buffer[rcvsize] = '\0';
           msg = mastermind(secret, buffer, temp);
           sprintf(buffer, "%s%s",buffer, msg);
-          send(fdc2, msg, 100, flags);
+          //send(fdc2, msg, 100, flags);
 
           if((strncmp(msg, "You win", 7) == 0)){
+            sprintf(buffer2, "You Lose. The winner number is: %s\n", secret);
               send(fdc2, "You win", 100, flags);
-              send(fdc1, "You Lose", 100, flags);
+              send(fdc1, buffer2, 100, flags);
           	  break;
             }
 
           if(num_guess == 2){
-              sprintf(msg, "You Lose. Winnumber: %s\n", secret);
+              sprintf(msg, "You Lose. Both of you. Winnumber: %s\n", secret);
               send(fdc1, msg, 100, flags);
               send(fdc2, msg, 100, flags);
               break;
             }
+            send(fdc2, msg, 100, flags);
     }
 
 close(fdc1);
