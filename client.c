@@ -11,7 +11,7 @@
 #include <arpa/inet.h>
 
 #define BUFSIZE 1024
-#define PORT_NO 9876
+#define PORT_NO 4242
 #define error(a,b) fprintf(stderr, a, b)
 
 int main(int argc, char *argv[] ){ // arg count, arg vector
@@ -35,6 +35,7 @@ int main(int argc, char *argv[] ){ // arg count, arg vector
    char buffer2[100];
    char buffer3[100];
    char TEMP[100];
+   char uj[100];
 	char * win = "You win";
 	char * lose = "You Lose";
   int cica;
@@ -88,26 +89,81 @@ int main(int argc, char *argv[] ){ // arg count, arg vector
         printf("\n===============================\n");
 
         if(strncmp(TEMP, lose, 8) == 0){
-            break;
+            printf("Akarsz ujat?(Ird be: ujra)");
+            fgets(uj,100,stdin);
+            if(strncmp(uj,"ujra",4)==0)
+            { send(fd, uj, 100, flags);
+                continue;}
+            else 
+            { close(fd);
+            exit(0);}
+            //break;
         }
+        
+        if(strncmp(TEMP, "Feladtad",8)==0)
+        {  printf("Vesztettel\n"); 
+            //printf("Akarsz ujat?");
+            //fgets(uj,100,stdin);
+            //if(strncmp(uj,"ujra",4)==0)
+            //{ send(fd, uj, 100, flags);
+             //   continue;}
+            //else 
+             close(fd);
+            exit(0);}
+        else if(strncmp(TEMP, "Feladta",7)==0)
+        {  printf("Nyertel\n"); 
+             close(fd);
+            exit(0);} 
 
         if((strcmp(TEMP, win) == 0)){
-            break;
+            printf("Akarsz ujat?(Ird be: ujra)");
+            fgets(uj,100,stdin);
+            if(strncmp(uj,"ujra",4)==0)
+            { send(fd, uj, 100, flags);
+                continue;}
+            else 
+            { close(fd);
+            exit(0);}            
+            //break;
         }
 
         printf("\nEnter your guess: ");
 				fgets(buffer,100,stdin);
 				send(fd, buffer, 100, flags);
         recv(fd, buffer3, 100, flags );
-
+        if(strncmp(buffer3, "Feladtad",8)==0)
+        { printf("Vesztettel\n"); 
+             close(fd);
+            exit(0);}
+        else if(strncmp(buffer3, "Feladta",7)==0)
+        {  printf("Nyertel\n");
+             close(fd);
+            exit(0);} 
+            
                 if((strncmp(buffer3, lose, 9) == 0) || strncmp(TEMP, lose, 8) == 0){
                     printf("Result: %s\n", buffer3);
-                    break;
+                    printf("Akarsz ujat?(Ird be: ujra)");
+            fgets(uj,100,stdin);
+            if(strncmp(uj,"ujra",4)==0)
+            { send(fd, uj, 100, flags);
+                continue;}
+            else 
+            { close(fd);
+            exit(0);}
+                    
                 }
 
                 if((strcmp(buffer3, win) == 0)){
                     printf("Result: %s\n", buffer3);
-                    break;
+                    printf("Akarsz ujat?(Ird be: ujra)");
+            fgets(uj,100,stdin);
+            if(strncmp(uj,"ujra",4)==0)
+            { send(fd, uj, 100, flags);
+                continue;}
+            else 
+            { close(fd);
+            exit(0);}
+                    //break;
                 } printf("Hint: %s\n", buffer3);
               }
            exit(0);

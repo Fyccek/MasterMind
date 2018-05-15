@@ -10,7 +10,7 @@
 #include <netinet/in.h>
 
 #define BUFSIZE 1024                      // buffer size
-#define PORT_NO 9876                  // port number
+#define PORT_NO 4242                  // port number
 #define error(a,b) fprintf(stderr, a, b)  // error 'function'
 
 /**
@@ -146,7 +146,7 @@ int main(int argc, char *argv[] ){ // arg count, arg vector
 	 char secret[5];
 	 char reply[100];
 	 int i;
-
+    
 	printf("Enter <random> or <four digit number>: ");
 	scanf("%s", choice);
 
@@ -190,26 +190,71 @@ int main(int argc, char *argv[] ){ // arg count, arg vector
     }
 
 	strcpy(buffer, "");
-
+    int ujra = 0;
     while(1){
 
+        if(ujra==1)
+           {
+            printf("Enter <random> or <four digit number>: ");
+	scanf("%s", choice);
+
+	if (strcmp(choice, "random") == 0) {
+		srand(time(NULL));
+		for (i=0; i <4; ++i)
+			secret[i] = (char)(((int)'0')+rand() % 6);
+		secret[4] = '\0';
+		//printf("%s", secret);
+	}
+	else {
+		for (i = 0; i < 4; i++)
+			secret[i] = choice[i];
+		secret[4] = '\0';
+	}
+            }
+            ujra = 0;
+  
           send(fdc1, buffer, 100, flags);
-    		  recv(fdc1, buffer, 100, flags );
-
-          buffer[rcvsize] = '\0';
+                		  
+            rcvsize=recv(fdc1, buffer, 100, flags );
+            buffer[rcvsize] = '\0';           
+         printf("%s\n",buffer);
+           if(strncmp(buffer, "feladom",3)==0)
+           {
+                send(fdc2, "Feladta", 100, flags);
+                send(fdc1, "Feladtad", 100, flags);
+                break;
+            } 
+          //buffer[rcvsize] = '\0';
           msg = mastermind(secret, buffer, temp);
-          ++num_guess;
-          sprintf(buffer, "%s%s",buffer, msg);
-
+          ++num_guess;          
+sprintf(buffer, "%s%s",buffer, msg);
+         
           if((strncmp(msg, "You win", 7) == 0)){
-              send(fdc1, "You win", 100, flags);
+                int u = 0;              
+                send(fdc1, "You win", 100, flags);
               send(fdc2, "You Lose", 100, flags);
+              recv(fdc1, buffer, 100, flags );
+                if(strncmp(buffer,"ujra",4)==0){u++;}
+              recv(fdc2, buffer, 100, flags );
+                 if(strncmp(buffer,"ujra",4)==0 && u==1)
+                {ujra = 1;
+                    num_guess = 0;
+                    continue;}
+                
+                                
           	  break;
             }
-
+            
           send(fdc2, buffer, 100, flags);
           send(fdc1, msg, 100, flags);
           rcvsize = recv(fdc2, buffer, 100, flags );
+           printf("%s\n",buffer);
+          if(strncmp(buffer, "feladom",3)==0)
+           {
+                send(fdc1, "Feladta", 100, flags);
+                send(fdc2, "Feladtad", 100, flags);
+                break;
+            }             
 
           buffer[rcvsize] = '\0';
           msg = mastermind(secret, buffer, temp);
@@ -217,13 +262,21 @@ int main(int argc, char *argv[] ){ // arg count, arg vector
           //send(fdc2, msg, 100, flags);
 
           if((strncmp(msg, "You win", 7) == 0)){
+            int u = 0; 
             sprintf(buffer2, "You Lose. The winner number is: %s\n", secret);
               send(fdc2, "You win", 100, flags);
               send(fdc1, buffer2, 100, flags);
+                recv(fdc1, buffer, 100, flags );
+                if(strncmp(buffer,"ujra",4)==0){u++;}
+              recv(fdc2, buffer, 100, flags );
+                 if(strncmp(buffer,"ujra",4)==0 && u==1)
+                {ujra = 1;
+                    num_guess = 0;
+                    continue;}
           	  break;
             }
 
-          if(num_guess == 2){
+          if(num_guess == 5){
               sprintf(msg, "You Lose. Both of you. Winnumber: %s\n", secret);
               send(fdc1, msg, 100, flags);
               send(fdc2, msg, 100, flags);
